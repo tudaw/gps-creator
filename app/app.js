@@ -28,7 +28,7 @@ const twoGis = L.tileLayer("https://tile2.maps.2gis.com/tiles?x={x}&y={y}&z={z}&
 
 L.control.layers(
   {
-    "OpenStreetMap (Default)": osm,
+    "OSM": osm,
     "Dark": dark,
     "2GIS": twoGis
   },

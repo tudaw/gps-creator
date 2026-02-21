@@ -35,6 +35,13 @@
       return Number(value.toFixed(10));
     }
 
+    const addedPointIcon = L.divIcon({
+      className: "added-point-marker",
+      iconSize: [14, 14],
+      iconAnchor: [7, 7],
+      popupAnchor: [0, -8]
+    });
+
     function getPopupContent(pointId, lat, lng) {
       return (
         '<div class="point-popup">' +
@@ -74,7 +81,7 @@
       nextPointId += 1;
       feature.properties.popupHtml = getPopupContent(pointId, roundedLat, roundedLng);
 
-      const marker = L.marker([roundedLat, roundedLng], { draggable: true })
+      const marker = L.marker([roundedLat, roundedLng], { draggable: true, icon: addedPointIcon })
         .bindPopup(feature.properties.popupHtml)
         .addTo(pointsLayer)
         .openPopup();
