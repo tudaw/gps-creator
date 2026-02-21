@@ -15,14 +15,27 @@
 <body>
   <div class="left-dock" aria-label="Actions">
     <button id="saveBtn" class="dock-button" type="button" title="Save points">
-      Save points
+      Save
     </button>
     <button id="removePointBtn" class="dock-button dock-button--danger" type="button" title="Delete last point">
-      Delete last point
+      Delete last
     </button>
   </div>
   <div class="point-counter">
     <span id="pointCount">Points: 0</span>
+  </div>
+  <div class="coordinate-input" aria-label="Coordinate input">
+    <input
+      id="latLonInput"
+      class="coordinate-input__field"
+      type="text"
+      inputmode="decimal"
+      placeholder="Latitude, Longitude"
+      aria-label="Latitude and longitude"
+    >
+    <button id="addCoordBtn" class="coordinate-input__button" type="button">
+      Add
+    </button>
   </div>
   <div id="saveStatus" class="save-status" aria-live="polite"></div>
   <div id="map"></div>

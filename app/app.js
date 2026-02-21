@@ -31,6 +31,8 @@ L.control.layers(
 ).addTo(map);
 
 const removePointButton = document.getElementById("removePointBtn");
+const latLonInput = document.getElementById("latLonInput");
+const addCoordButton = document.getElementById("addCoordBtn");
 
 const pointManager = window.createPointManager({
   map,
@@ -52,10 +54,65 @@ map.on("click", (e) => {
   pointManager.addPoint(e.latlng);
 });
 
+function parseLatLon(value) {
+  const parts = String(value).split(",").map((part) => part.trim());
+  if (parts.length !== 2) {
+    return null;
+  }
+
+  const lat = Number(parts[0]);
+  const lng = Number(parts[1]);
+
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+    return null;
+  }
+
+  if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+    return null;
+  }
+
+  return { lat, lng };
+}
+
+function addPointFromInput() {
+  if (!latLonInput) {
+    return;
+  }
+
+  const parsed = parseLatLon(latLonInput.value);
+  if (!parsed) {
+    latLonInput.setCustomValidity("Use format: lat, lon (example: 40.7128, -74.0060)");
+    latLonInput.reportValidity();
+    return;
+  }
+
+  latLonInput.setCustomValidity("");
+  pointManager.addPoint(parsed);
+  map.panTo([parsed.lat, parsed.lng]);
+  latLonInput.value = "";
+}
+
 if (removePointButton) {
   removePointButton.disabled = !pointManager.hasPoints();
   removePointButton.addEventListener("click", () => {
     pointManager.removeLastPoint();
+  });
+}
+
+if (addCoordButton) {
+  addCoordButton.addEventListener("click", addPointFromInput);
+}
+
+if (latLonInput) {
+  latLonInput.addEventListener("input", () => {
+    latLonInput.setCustomValidity("");
+  });
+
+  latLonInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      addPointFromInput();
+    }
   });
 }
 

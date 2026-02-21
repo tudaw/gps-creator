@@ -76,6 +76,48 @@ html, body {
   color: #111827;
 }
 
+.coordinate-input {
+  position: absolute;
+  top: 14px;
+  left: 170px;
+  z-index: 1000;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(209, 213, 219, 0.95);
+  border-radius: 12px;
+  padding: 6px;
+}
+
+.coordinate-input__field {
+  border: 1px solid rgba(156, 163, 175, 0.9);
+  border-radius: 8px;
+  padding: 6px 8px;
+  min-width: 160px;
+  font-size: 13px;
+}
+
+.coordinate-input__field:focus {
+  outline: 2px solid rgba(59, 130, 246, 0.35);
+  border-color: rgba(59, 130, 246, 0.7);
+}
+
+.coordinate-input__button {
+  cursor: pointer;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  border-radius: 8px;
+  padding: 6px 10px;
+  background: linear-gradient(180deg, #ffffff 0%, #eceef2 100%);
+  color: #1f2937;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.coordinate-input__button:hover {
+  background: linear-gradient(180deg, #f9fafb 0%, #e5e7eb 100%);
+}
+
 .save-status {
   position: absolute;
   right: 14px;
