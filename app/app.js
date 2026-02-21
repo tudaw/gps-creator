@@ -30,9 +30,16 @@ L.control.layers(
   { position: "topright" }
 ).addTo(map);
 
+const removePointButton = document.getElementById("removePointBtn");
+
 const pointManager = window.createPointManager({
   map,
-  pointCountEl: document.getElementById("pointCount")
+  pointCountEl: document.getElementById("pointCount"),
+  onPointsChanged: (count) => {
+    if (removePointButton) {
+      removePointButton.disabled = count === 0;
+    }
+  }
 });
 
 const saveManager = window.createSaveManager({
@@ -44,5 +51,12 @@ const saveManager = window.createSaveManager({
 map.on("click", (e) => {
   pointManager.addPoint(e.latlng);
 });
+
+if (removePointButton) {
+  removePointButton.disabled = !pointManager.hasPoints();
+  removePointButton.addEventListener("click", () => {
+    pointManager.removeLastPoint();
+  });
+}
 
 saveManager.initialize();

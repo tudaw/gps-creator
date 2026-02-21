@@ -50,6 +50,19 @@ html, body {
   transform: translateY(0) scale(1);
 }
 
+.dock-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 6px 12px rgba(15, 23, 42, 0.1);
+}
+
+.dock-button--danger {
+  color: #7f1d1d;
+  border-color: rgba(239, 68, 68, 0.35);
+  background: linear-gradient(180deg, #fff1f2 0%, #ffe4e6 100%);
+}
+
 .point-counter {
   position: absolute;
   top: 14px;
@@ -80,4 +93,21 @@ html, body {
 
 .save-status.is-visible {
   display: block;
+}
+
+.point-delete-btn {
+  margin-top: 8px;
+  width: 100%;
+  cursor: pointer;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-radius: 8px;
+  background: #fee2e2;
+  color: #7f1d1d;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 8px;
+}
+
+.point-delete-btn:hover {
+  background: #fecaca;
 }

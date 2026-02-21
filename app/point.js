@@ -2,13 +2,19 @@
   function createPointManager(options) {
     const map = options.map;
     const pointCountEl = options.pointCountEl;
+    const onPointsChanged = typeof options.onPointsChanged === "function" ? options.onPointsChanged : null;
     const pointsLayer = L.layerGroup().addTo(map);
     const points = new Map();
+    const pointOrder = [];
     let nextPointId = 1;
 
     function updateCount() {
       if (pointCountEl) {
         pointCountEl.textContent = "Points: " + points.size;
+      }
+
+      if (onPointsChanged) {
+        onPointsChanged(points.size);
       }
     }
 
@@ -29,11 +35,12 @@
       return Number(value.toFixed(10));
     }
 
-    function getPopupContent(lat, lng) {
+    function getPopupContent(pointId, lat, lng) {
       return (
         '<div class="point-popup">' +
           "<div><strong>Latitude:</strong> " + lat + "</div>" +
           "<div><strong>Longitude:</strong> " + lng + "</div>" +
+          '<button class="point-delete-btn" type="button" data-delete-point-id="' + pointId + '">Delete point</button>' +
         "</div>"
       );
     }
@@ -47,7 +54,7 @@
 
       const roundedLat = roundCoordinate(lat);
       const roundedLng = roundCoordinate(lng);
-      const popupHtml = getPopupContent(roundedLat, roundedLng);
+      const popupHtml = getPopupContent(pointId, roundedLat, roundedLng);
 
       point.feature.geometry.coordinates = [roundedLng, roundedLat];
       point.feature.properties.popupHtml = popupHtml;
@@ -63,20 +70,20 @@
       const roundedLng = roundCoordinate(latlng.lng);
       const feature = buildFeature(roundedLat, roundedLng);
 
-      feature.properties.popupHtml = getPopupContent(roundedLat, roundedLng);
+      const pointId = nextPointId;
+      nextPointId += 1;
+      feature.properties.popupHtml = getPopupContent(pointId, roundedLat, roundedLng);
 
       const marker = L.marker([roundedLat, roundedLng], { draggable: true })
         .bindPopup(feature.properties.popupHtml)
         .addTo(pointsLayer)
         .openPopup();
 
-      const pointId = nextPointId;
-      nextPointId += 1;
-
       points.set(pointId, {
         feature,
         marker
       });
+      pointOrder.push(pointId);
 
       marker.on("dragstart", () => {
         marker.openPopup();
@@ -92,18 +99,67 @@
         updatePoint(pointId, position.lat, position.lng);
       });
 
+      marker.on("popupopen", () => {
+        const popupEl = marker.getPopup() && marker.getPopup().getElement();
+        if (!popupEl) {
+          return;
+        }
+
+        const deleteButton = popupEl.querySelector('[data-delete-point-id="' + pointId + '"]');
+        if (!deleteButton) {
+          return;
+        }
+
+        deleteButton.addEventListener("click", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          removePoint(pointId);
+        }, { once: true });
+      });
+
       updateCount();
+    }
+
+    function removePoint(pointId) {
+      const point = points.get(pointId);
+      if (!point) {
+        return false;
+      }
+
+      pointsLayer.removeLayer(point.marker);
+      points.delete(pointId);
+      const pointOrderIndex = pointOrder.lastIndexOf(pointId);
+      if (pointOrderIndex !== -1) {
+        pointOrder.splice(pointOrderIndex, 1);
+      }
+      updateCount();
+      return true;
+    }
+
+    function removeLastPoint() {
+      const pointId = pointOrder[pointOrder.length - 1];
+      if (typeof pointId === "undefined") {
+        return false;
+      }
+
+      return removePoint(pointId);
     }
 
     function getFeatures() {
       return Array.from(points.values(), (point) => point.feature);
     }
 
+    function hasPoints() {
+      return points.size > 0;
+    }
+
     updateCount();
 
     return {
       addPoint,
-      getFeatures
+      removeLastPoint,
+      getFeatures,
+      hasPoints
     };
   }
 
