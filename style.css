@@ -228,3 +228,24 @@ body {
 .leaflet-control-zoom a:hover {
   background: rgba(55, 65, 81, 0.95);
 }
+
+.gps-path-line {
+  stroke-dasharray: 10 12;
+  animation: gps-path-flow 3.5s linear infinite;
+}
+
+@keyframes gps-path-flow {
+  from {
+    stroke-dashoffset: 0;
+  }
+
+  to {
+    stroke-dashoffset: -22;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gps-path-line {
+    animation: none;
+  }
+}

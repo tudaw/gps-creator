@@ -7,7 +7,8 @@
     const pathLine = L.polyline([], {
       color: "darkgreen",
       weight: 1.5,
-      opacity: 1
+      opacity: 1,
+      className: "gps-path-line"
     }).addTo(map);
     const points = new Map();
     const pointOrder = [];
