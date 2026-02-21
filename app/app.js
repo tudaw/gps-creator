@@ -26,11 +26,18 @@ const twoGis = L.tileLayer("https://tile2.maps.2gis.com/tiles?x={x}&y={y}&z={z}&
   attribution: "&copy; 2GIS"
 });
 
+const googleMaps = L.tileLayer("https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", {
+  subdomains: ["mt0", "mt1", "mt2", "mt3"],
+  maxZoom: Math.min(config.maxZoom, 18),
+  attribution: "&copy; Google"
+});
+
 L.control.layers(
   {
     "Dark": dark,
     "OSM": osm,
-    "2GIS": twoGis
+    "2GIS": twoGis,
+    "Google": googleMaps
   },
   {},
   { position: "topright" }
