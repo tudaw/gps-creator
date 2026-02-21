@@ -178,6 +178,19 @@
       return removePoint(pointId);
     }
 
+    function clearAllPoints() {
+      if (points.size === 0) {
+        return false;
+      }
+
+      pointsLayer.clearLayers();
+      points.clear();
+      pointOrder.length = 0;
+      updatePathLine();
+      updateCount();
+      return true;
+    }
+
     function getFeatures() {
       return Array.from(points.values(), (point) => point.feature);
     }
@@ -191,6 +204,7 @@
     return {
       addPoint,
       removeLastPoint,
+      clearAllPoints,
       getFeatures,
       hasPoints
     };

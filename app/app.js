@@ -37,6 +37,7 @@ L.control.layers(
 ).addTo(map);
 
 const removePointButton = document.getElementById("removePointBtn");
+const clearPointsButton = document.getElementById("clearPointsBtn");
 const saveButton = document.getElementById("saveBtn");
 const homeButton = document.getElementById("homeBtn");
 const latLonInput = document.getElementById("latLonInput");
@@ -48,6 +49,10 @@ const pointManager = window.createPointManager({
   onPointsChanged: (count) => {
     if (removePointButton) {
       removePointButton.disabled = count === 0;
+    }
+
+    if (clearPointsButton) {
+      clearPointsButton.disabled = count === 0;
     }
 
     if (saveButton) {
@@ -108,6 +113,13 @@ if (removePointButton) {
   removePointButton.disabled = !pointManager.hasPoints();
   removePointButton.addEventListener("click", () => {
     pointManager.removeLastPoint();
+  });
+}
+
+if (clearPointsButton) {
+  clearPointsButton.disabled = !pointManager.hasPoints();
+  clearPointsButton.addEventListener("click", () => {
+    pointManager.clearAllPoints();
   });
 }
 
