@@ -64,11 +64,20 @@
       popupAnchor: [0, -8]
     });
 
+    function getPopupField(label, value) {
+      return (
+        '<div class="point-popup-field">' +
+          '<strong class="point-popup-field-label">' + label + ":</strong> " +
+          '<span class="point-popup-field-value">' + value + "</span>" +
+        "</div>"
+      );
+    }
+
     function getPopupContent(pointId, lat, lng) {
       return (
         '<div class="point-popup">' +
-          "<div><strong>Latitude:</strong> " + lat + "</div>" +
-          "<div><strong>Longitude:</strong> " + lng + "</div>" +
+          getPopupField("Latitude", lat) +
+          getPopupField("Longitude", lng) +
           '<div class="point-popup-actions">' +
             '<button class="point-copy-btn" type="button" data-copy-point-id="' + pointId + '" title="Copy coordinates" aria-label="Copy coordinates">' +
               '<i class="fa fa-copy" aria-hidden="true"></i>' +
