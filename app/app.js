@@ -16,6 +16,11 @@ const osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   attribution: "&copy; OpenStreetMap contributors"
 }).addTo(map);
 
+const dark = L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+  maxZoom: config.maxZoom,
+  attribution: "&copy; OpenStreetMap contributors &copy; CARTO"
+});
+
 const twoGis = L.tileLayer("https://tile2.maps.2gis.com/tiles?x={x}&y={y}&z={z}&v=1", {
   maxZoom: Math.min(config.maxZoom, 18),
   attribution: "&copy; 2GIS"
@@ -23,7 +28,8 @@ const twoGis = L.tileLayer("https://tile2.maps.2gis.com/tiles?x={x}&y={y}&z={z}&
 
 L.control.layers(
   {
-    OpenStreetMap: osm,
+    "OpenStreetMap (Default)": osm,
+    "Dark": dark,
     "2GIS": twoGis
   },
   {},
