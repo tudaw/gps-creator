@@ -32,6 +32,7 @@ body {
   left: 14px;
   top: 50%;
   transform: translateY(-50%);
+  width: 52px;
   z-index: 1000;
   background: var(--panel-bg);
   border: 1px solid var(--panel-border);
@@ -47,16 +48,22 @@ body {
 }
 
 .dock-button {
+  box-sizing: border-box;
   cursor: pointer;
   border: 1px solid var(--button-border);
   border-radius: 14px;
-  padding: 10px 12px;
-  min-width: 88px;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  min-width: 0;
   background: var(--button-bg);
   box-shadow: 0 10px 20px rgba(2, 6, 23, 0.4);
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .dock-button:hover {
@@ -80,6 +87,12 @@ body {
   color: #fecaca;
   border-color: var(--button-danger-border);
   background: var(--button-danger-bg);
+}
+
+.dock-button--icon {
+  min-width: 36px;
+  font-size: 16px;
+  line-height: 1;
 }
 
 .point-counter {

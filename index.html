@@ -10,15 +10,22 @@
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
     crossorigin=""
   >
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+  >
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
   <div class="left-dock" aria-label="Actions">
+    <button id="homeBtn" class="dock-button dock-button--icon" type="button" title="Go to configured map center" aria-label="Go to configured map center">
+      <i class="fa fa-home" aria-hidden="true"></i>
+    </button>
     <button id="saveBtn" class="dock-button" type="button" title="Save points">
-      Save
+      <i class="fa fa-save" aria-hidden="true"></i>
     </button>
     <button id="removePointBtn" class="dock-button dock-button--danger" type="button" title="Delete last point">
-      Delete last
+      <i class="fa fa-trash" aria-hidden="true"></i>
     </button>
   </div>
   <div class="point-counter">

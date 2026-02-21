@@ -1,7 +1,7 @@
 const defaultConfig = {
-  mapCenter: [40.7128, -74.0060],
-  defaultZoom: 12,
-  maxZoom: 19
+  mapCenter: [51.150261, 71.4105],
+  defaultZoom: 15,
+  maxZoom: 22
 };
 
 const config = {
@@ -37,6 +37,8 @@ L.control.layers(
 ).addTo(map);
 
 const removePointButton = document.getElementById("removePointBtn");
+const saveButton = document.getElementById("saveBtn");
+const homeButton = document.getElementById("homeBtn");
 const latLonInput = document.getElementById("latLonInput");
 const addCoordButton = document.getElementById("addCoordBtn");
 
@@ -46,6 +48,10 @@ const pointManager = window.createPointManager({
   onPointsChanged: (count) => {
     if (removePointButton) {
       removePointButton.disabled = count === 0;
+    }
+
+    if (saveButton) {
+      saveButton.disabled = count === 0;
     }
   }
 });
@@ -102,6 +108,16 @@ if (removePointButton) {
   removePointButton.disabled = !pointManager.hasPoints();
   removePointButton.addEventListener("click", () => {
     pointManager.removeLastPoint();
+  });
+}
+
+if (saveButton) {
+  saveButton.disabled = !pointManager.hasPoints();
+}
+
+if (homeButton) {
+  homeButton.addEventListener("click", () => {
+    map.setView(config.mapCenter, config.defaultZoom);
   });
 }
 
