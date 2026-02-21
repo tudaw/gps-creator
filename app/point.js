@@ -4,6 +4,11 @@
     const pointCountEl = options.pointCountEl;
     const onPointsChanged = typeof options.onPointsChanged === "function" ? options.onPointsChanged : null;
     const pointsLayer = L.layerGroup().addTo(map);
+    const pathLine = L.polyline([], {
+      color: "darkgreen",
+      weight: 1.5,
+      opacity: 1
+    }).addTo(map);
     const points = new Map();
     const pointOrder = [];
     let nextPointId = 1;
@@ -70,6 +75,25 @@
       if (point.marker.isPopupOpen()) {
         point.marker.openPopup();
       }
+
+      updatePathLine();
+    }
+
+    function updatePathLine() {
+      const latLngs = [];
+
+      for (let index = 0; index < pointOrder.length; index += 1) {
+        const pointId = pointOrder[index];
+        const point = points.get(pointId);
+        if (!point) {
+          continue;
+        }
+
+        const coordinates = point.feature.geometry.coordinates;
+        latLngs.push([coordinates[1], coordinates[0]]);
+      }
+
+      pathLine.setLatLngs(latLngs);
     }
 
     function addPoint(latlng) {
@@ -91,6 +115,7 @@
         marker
       });
       pointOrder.push(pointId);
+      updatePathLine();
 
       marker.on("dragstart", () => {
         marker.openPopup();
@@ -139,6 +164,7 @@
       if (pointOrderIndex !== -1) {
         pointOrder.splice(pointOrderIndex, 1);
       }
+      updatePathLine();
       updateCount();
       return true;
     }
