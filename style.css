@@ -178,17 +178,39 @@ body {
   display: block;
 }
 
-.point-delete-btn {
+.point-popup-actions {
   margin-top: 8px;
-  width: 100%;
+  display: flex;
+  gap: 8px;
+}
+
+.point-copy-btn,
+.point-delete-btn {
+  width: 32px;
+  height: 32px;
   cursor: pointer;
+  border-radius: 8px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.point-copy-btn {
+  border: 1px solid var(--button-border);
+  background: var(--button-bg);
+  color: var(--text);
+}
+
+.point-copy-btn:hover {
+  background: var(--button-hover-bg);
+}
+
+.point-delete-btn {
   border: 1px solid var(--button-danger-border);
   border-radius: 8px;
   background: var(--button-danger-bg);
   color: #fecaca;
-  font-size: 12px;
-  font-weight: 600;
-  padding: 6px 8px;
 }
 
 .point-delete-btn:hover {

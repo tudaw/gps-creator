@@ -42,10 +42,12 @@ const saveButton = document.getElementById("saveBtn");
 const homeButton = document.getElementById("homeBtn");
 const latLonInput = document.getElementById("latLonInput");
 const addCoordButton = document.getElementById("addCoordBtn");
+const saveStatusEl = document.getElementById("saveStatus");
 
 const pointManager = window.createPointManager({
   map,
   pointCountEl: document.getElementById("pointCount"),
+  statusEl: saveStatusEl,
   onPointsChanged: (count) => {
     if (removePointButton) {
       removePointButton.disabled = count === 0;
@@ -63,7 +65,7 @@ const pointManager = window.createPointManager({
 
 const saveManager = window.createSaveManager({
   getFeatures: () => pointManager.getFeatures(),
-  saveStatusEl: document.getElementById("saveStatus"),
+  saveStatusEl,
   saveButtonEl: document.getElementById("saveBtn")
 });
 

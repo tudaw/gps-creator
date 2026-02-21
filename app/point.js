@@ -2,6 +2,7 @@
   function createPointManager(options) {
     const map = options.map;
     const pointCountEl = options.pointCountEl;
+    const statusEl = options.statusEl;
     const onPointsChanged = typeof options.onPointsChanged === "function" ? options.onPointsChanged : null;
     const pointsLayer = L.layerGroup().addTo(map);
     const pathLine = L.polyline([], {
@@ -22,6 +23,21 @@
       if (onPointsChanged) {
         onPointsChanged(points.size);
       }
+    }
+
+    function setStatus(message) {
+      if (!statusEl) {
+        return;
+      }
+
+      if (!message) {
+        statusEl.textContent = "";
+        statusEl.classList.remove("is-visible");
+        return;
+      }
+
+      statusEl.textContent = message;
+      statusEl.classList.add("is-visible");
     }
 
     function buildFeature(lat, lng) {
@@ -53,7 +69,14 @@
         '<div class="point-popup">' +
           "<div><strong>Latitude:</strong> " + lat + "</div>" +
           "<div><strong>Longitude:</strong> " + lng + "</div>" +
-          '<button class="point-delete-btn" type="button" data-delete-point-id="' + pointId + '">Delete point</button>' +
+          '<div class="point-popup-actions">' +
+            '<button class="point-copy-btn" type="button" data-copy-point-id="' + pointId + '" title="Copy coordinates" aria-label="Copy coordinates">' +
+              '<i class="fa fa-copy" aria-hidden="true"></i>' +
+            "</button>" +
+            '<button class="point-delete-btn" type="button" data-delete-point-id="' + pointId + '" title="Delete point" aria-label="Delete point">' +
+              '<i class="fa fa-trash" aria-hidden="true"></i>' +
+            "</button>" +
+          "</div>" +
         "</div>"
       );
     }
@@ -97,6 +120,61 @@
       pathLine.setLatLngs(latLngs);
     }
 
+    function copyTextFallback(text) {
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.setAttribute("readonly", "readonly");
+      textarea.style.position = "fixed";
+      textarea.style.left = "-9999px";
+      document.body.appendChild(textarea);
+      textarea.select();
+
+      let copied = false;
+      try {
+        copied = document.execCommand("copy");
+      } catch (error) {
+        copied = false;
+      }
+
+      textarea.remove();
+      return copied;
+    }
+
+    async function copyPointCoordinates(pointId) {
+      const point = points.get(pointId);
+      if (!point) {
+        setStatus("Could not copy point coordinates.");
+        return;
+      }
+
+      const coordinates = point.feature.geometry.coordinates;
+      const text = coordinates[1] + ", " + coordinates[0];
+
+      try {
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+          await navigator.clipboard.writeText(text);
+          setStatus("Coordinates copied to clipboard.");
+          return;
+        }
+
+        const fallbackCopied = copyTextFallback(text);
+        if (!fallbackCopied) {
+          setStatus("Copy failed. Clipboard access is unavailable.");
+          return;
+        }
+
+        setStatus("Coordinates copied to clipboard.");
+      } catch (error) {
+        const fallbackCopied = copyTextFallback(text);
+        if (fallbackCopied) {
+          setStatus("Coordinates copied to clipboard.");
+          return;
+        }
+
+        setStatus("Copy failed. Browser denied clipboard access.");
+      }
+    }
+
     function addPoint(latlng) {
       const roundedLat = roundCoordinate(latlng.lat);
       const roundedLng = roundCoordinate(latlng.lng);
@@ -108,8 +186,7 @@
 
       const marker = L.marker([roundedLat, roundedLng], { draggable: true, icon: addedPointIcon })
         .bindPopup(feature.properties.popupHtml)
-        .addTo(pointsLayer)
-        .openPopup();
+        .addTo(pointsLayer);
 
       points.set(pointId, {
         feature,
@@ -138,19 +215,27 @@
           return;
         }
 
+        const copyButton = popupEl.querySelector('[data-copy-point-id="' + pointId + '"]');
         const deleteButton = popupEl.querySelector('[data-delete-point-id="' + pointId + '"]');
-        if (!deleteButton) {
-          return;
+        if (copyButton) {
+          copyButton.onclick = async (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            await copyPointCoordinates(pointId);
+          };
         }
 
-        deleteButton.addEventListener("click", (event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          removePoint(pointId);
-        }, { once: true });
+        if (deleteButton) {
+          deleteButton.onclick = (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            removePoint(pointId);
+          };
+        }
       });
 
       updateCount();
+      marker.openPopup();
     }
 
     function removePoint(pointId) {
